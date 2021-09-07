@@ -6,18 +6,18 @@ const path = require("path");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const authRouter = require("./routes/auth");
+const { readdirSync } = require("fs");
 
 if (process.env.NODE_ENV === "development") require("dotenv").config();
 
 const app = express();
 
 // Middleware
-app.use("/api", authRouter);
-// Routes
-// app.get("/api/:message", (req, res) => {
-//   res.status(200).send(req.params.message);
-// });
+app.use(cors());
+app.use(morgan("dev"));
+readdirSync("./routes").map((route) =>
+  app.use("/api", require(`./routes/${route}`))
+);
 
 // Execute
 const port = process.env.PORT || 8000;

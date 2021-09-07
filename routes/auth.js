@@ -1,9 +1,8 @@
 import express from "express";
 
 const router = express.Router();
+const { showMessage } = require("../controller/showMessage");
 
-router.get("/:message", (req, res) => {
-  res.status(200).send(req.params.message);
-});
+router.get("/:message", showMessage);
 
 module.exports = router;
