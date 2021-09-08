@@ -15,6 +15,9 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(morgan("dev"));
+app.use(express.json());
+
+// routes middleware
 readdirSync("./routes").map((route) =>
   app.use("/api", require(`./routes/${route}`))
 );
