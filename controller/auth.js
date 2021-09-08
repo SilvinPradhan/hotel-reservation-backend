@@ -1,10 +1,6 @@
-import User from "../models/user";
-// test end point
-export const showMessage = (req, res) => {
-  res.status(200).send(req.params.message);
-};
-
-export const register = async (req, res) => {
+const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+exports.register = async (req, res) => {
   console.log(req.body);
   const { name, email, password } = req.body;
   // validate
@@ -25,5 +21,36 @@ export const register = async (req, res) => {
   } catch (err) {
     console.log("User could not be added to the database.", err);
     return res.status(400).send("Error. Please try again.");
+  }
+};
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    let user = await User.findOne({ email }).exec();
+    // console.log("User already exists in the database.", user);
+    if (!user) {
+      return res.status(400).send("User with that email is not found.");
+    }
+    user.comparePassword(password, (err, match) => {
+      console.log("Compare password in login err", err);
+      if (!match || err) return res.status(400).send("Wrong password");
+      console.log("Generate a token then send as response to the client");
+      let token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      res.json({
+        token,
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+      });
+    });
+  } catch (err) {
+    console.log("Error logging in.", err);
+    res.status(400).send("Login failed. Please try again.");
   }
 };
