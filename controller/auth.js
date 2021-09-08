@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+
 exports.register = async (req, res) => {
   console.log(req.body);
   const { name, email, password } = req.body;
@@ -34,7 +35,7 @@ exports.login = async (req, res) => {
     user.comparePassword(password, (err, match) => {
       console.log("Compare password in login err", err);
       if (!match || err) return res.status(400).send("Wrong password");
-      console.log("Generate a token then send as response to the client");
+      // console.log("Generate a token then send as response to the client");
       let token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "7d",
       });
