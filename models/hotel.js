@@ -26,7 +26,7 @@ const hotelSchema = new Schema(
       ref: "User",
     },
     image: {
-      type: Buffer,
+      data: Buffer,
       contentType: String,
     },
     from: {
@@ -42,4 +42,4 @@ const hotelSchema = new Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Hotel", hotelSchema);
+module.exports = mongoose.model("Hotel", hotelSchema);
