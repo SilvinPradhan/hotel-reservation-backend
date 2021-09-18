@@ -1,6 +1,11 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
+exports.test = (req, res) => {
+  console.log("Test successful");
+  res.status(200).send("Api test successful.");
+};
+
 exports.register = async (req, res) => {
   console.log(req.body);
   const { name, email, password } = req.body;
@@ -12,8 +17,11 @@ exports.register = async (req, res) => {
       .send("Password is required and should be minimum of 6 characters long.");
   }
   let userExist = await User.findOne({ email }).exec();
-  if (userExist) return res.status(400).send("Email is already taken.");
+  if (userExist) {
+    return res.status(400).send("Email is already taken.");
+  }
   // register
+
   const user = new User(req.body);
   try {
     await user.save();

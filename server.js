@@ -7,15 +7,35 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { readdirSync } = require("fs");
-
-if (process.env.NODE_ENV === "development") require("dotenv").config();
+const { MongoClient } = require("mongodb");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(morgan("dev"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+
+// Database connection
+
+mongoose.connect(
+  `${process.env.DATABASE2}`,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  (err, client) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log(`MongoDB Connected`);
+  }
+);
 
 // routes middleware
 readdirSync("./routes").map((route) =>
