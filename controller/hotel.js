@@ -8,6 +8,7 @@ exports.create = async (req, res) => {
     let files = req.files;
 
     let hotel = new Hotel(fields);
+    hotel.postedBy = req.user._id;
     // handle image - read the entire file before saving to the db (asynchronously)
     if (files.image) {
       hotel.image.data = fs.readFileSync(files.image.path);
