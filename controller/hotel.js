@@ -31,6 +31,12 @@ exports.create = async (req, res) => {
     }
 };
 
+exports.read = async (req, res) => {
+    let hotel = await Hotel.findById(req.params.hotelId).select('-image.data').exec()
+    console.log("Single Hotel Information Page", hotel);
+    res.json(hotel)
+}
+
 exports.hotels = async (req, res) => {
     let all = await Hotel.find({})
         .limit(12)
