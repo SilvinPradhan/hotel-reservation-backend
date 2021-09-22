@@ -1,5 +1,6 @@
 const Hotel = require("../models/hotel");
 const fs = require("fs");
+const {remove} = require("./hotel");
 
 exports.create = async (req, res) => {
     //   console.log("request fields", req.fields);
@@ -54,4 +55,11 @@ exports.sellerHotels = async (req, res) => {
         .populate('postedBy', '_id name')
         .exec()
     res.send(all)
+}
+
+exports.remove = async (req, res) => {
+    let deleted = await Hotel.findByIdAndDelete(req.params.hotelId)
+        .select("-image.data")
+        .exec()
+    res.json(deleted)
 }
