@@ -18,8 +18,8 @@ exports.create = async (req, res) => {
 
         hotel.save((err, result) => {
             if (err) {
-                console.log("saving hotel err", err);
-                res.status(400).send("Error saving hotel in the db");
+                console.log("Saving Hotel Error", err);
+                res.status(400).send("Error saving hotel data in the database.");
             }
             res.json(result);
         });
