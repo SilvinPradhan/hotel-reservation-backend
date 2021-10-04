@@ -8,6 +8,9 @@ exports.create = async (req, res) => {
         let fields = req.fields;
         let files = req.files;
 
+        console.log(fields);
+        console.log(files);
+
         let hotel = new Hotel(fields);
         hotel.postedBy = req.user._id;
         // handle image - read the entire file before saving to the db (asynchronously)
@@ -32,10 +35,12 @@ exports.create = async (req, res) => {
 };
 
 exports.read = async (req, res) => {
-    let hotel = await Hotel.findById(req.params.hotelId).select('-image.data').exec()
+    let hotel = await Hotel.findById(req.params.hotelId)
+        .select("-image.data")
+        .exec();
     console.log("Single Hotel Information Page", hotel);
-    res.json(hotel)
-}
+    res.json(hotel);
+};
 
 exports.hotels = async (req, res) => {
     let all = await Hotel.find({})
@@ -57,40 +62,42 @@ exports.image = async (req, res) => {
 
 exports.sellerHotels = async (req, res) => {
     let all = await Hotel.find({postedBy: req.user._id})
-        .select('-image.data')
-        .populate('postedBy', '_id name')
-        .exec()
-    res.send(all)
-}
+        .select("-image.data")
+        .populate("postedBy", "_id name")
+        .exec();
+    res.send(all);
+};
 
 exports.remove = async (req, res) => {
     let deleted = await Hotel.findByIdAndDelete(req.params.hotelId)
         .select("-image.data")
-        .exec()
-    res.json(deleted)
-}
+        .exec();
+    res.json(deleted);
+};
 
 exports.update = async (req, res) => {
     try {
         let fields = req.fields;
         let files = req.files;
+        let data = {...fields};
 
-        let data = {...fields}
         if (files.image) {
-            let image = {}
-            image.data = fs.readFileSync(files.image.path)
-            image.contentType = files.image.type
-            data.image = image
-            console.log(data)
-            console.log(image)
-        }
-        let updated = await Hotel.findByIdAndUpdate(req.params.hotelId, data, {
-            new: true
-        }).select('-image.data');
+            let image = {};
+            image.data = fs.readFileSync(files.image.path);
+            image.contentType = files.image.type;
 
-        res.json(updated)
-    } catch (err) {
-        console.log(err)
-        res.status(400).send('Updating the hotel information failed.')
+            data.image = image;
+            console.log(image);
+        }
+
+        let updated = await Hotel.findByIdAndUpdate(req.params.hotelId, data, {
+            new: true,
+        }).select("-image.data");
+
+        console.log(updated);
+        res.json(updated);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("Hotel update failed. try again.");
     }
 }
