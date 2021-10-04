@@ -9,6 +9,7 @@ const {
     update,
     sellerHotels,
     remove,
+    userHotelBookings, isAlreadyBooked
 } = require("../controller/hotel");
 const {requireSignin, hotelOwner} = require("../middlewares/index");
 
@@ -25,5 +26,8 @@ router.put(
     update
 )
 router.get("/seller-hotels/", requireSignin, sellerHotels);
+// orders
+router.get('/user-hotel-bookings', requireSignin, userHotelBookings)
+router.get('/is-already-booked/:hotelId', requireSignin, isAlreadyBooked)
 
 module.exports = router;
